@@ -1,0 +1,55 @@
+import java.util.Deque;
+import java.util.LinkedList;
+
+public class Solution {
+    public int longestSubarray(int[] nums, int limit) {
+        Deque<Integer> maxDeque = new LinkedList<>();
+        Deque<Integer> minDeque = new LinkedList<>();
+        int left = 0, result = 0;
+        
+        for (int right = 0; right < nums.length; right++) {
+            while (!maxDeque.isEmpty() && nums[maxDeque.peekLast()] <= nums[right]) {
+                maxDeque.pollLast();
+            }
+            maxDeque.offerLast(right);
+            
+            while (!minDeque.isEmpty() && nums[minDeque.peekLast()] >= nums[right]) {
+                minDeque.pollLast();
+            }
+            minDeque.offerLast(right);
+            
+            while (nums[maxDeque.peekFirst()] - nums[minDeque.peekFirst()] > limit) {
+                left++;
+                if (maxDeque.peekFirst() < left) {
+                    maxDeque.pollFirst();
+                }
+                if (minDeque.peekFirst() < left) {
+                    minDeque.pollFirst();
+                }
+            }
+            
+            result = Math.max(result, right - left + 1);
+        }
+        
+        return result;
+    }
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+
+        // Test case 1
+        int[] nums1 = {8, 2, 4, 7};
+        int limit1 = 4;
+        System.out.println(solution.longestSubarray(nums1, limit1)); // Output: 2
+
+        // Test case 2
+        int[] nums2 = {10, 1, 2, 4, 7, 2};
+        int limit2 = 5;
+        System.out.println(solution.longestSubarray(nums2, limit2)); // Output: 4
+
+        // Test case 3
+        int[] nums3 = {4, 2, 2, 2, 4, 4, 2, 2};
+        int limit3 = 0;
+        System.out.println(solution.longestSubarray(nums3, limit3)); // Output: 3
+    }
+}
