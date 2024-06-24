@@ -1,0 +1,46 @@
+import java.util.LinkedList;
+import java.util.Queue;
+
+public class Solution {
+    public int minKBitFlips(int[] nums, int k) {
+        int n = nums.length;
+        Queue<Integer> flipQueue = new LinkedList<>();
+        int flips = 0;
+
+        for (int i = 0; i < n; i++) {
+            // If the leftmost flip has gone out of the window of size k, remove it from the queue
+            if (!flipQueue.isEmpty() && flipQueue.peek() + k <= i) {
+                flipQueue.poll();
+            }
+            
+            // If the current element is 0 and the count of flips affecting it is even (including 0),
+            // we need to flip the subarray starting at the current element
+            if (nums[i] == 0 && flipQueue.size() % 2 == 0 || nums[i] == 1 && flipQueue.size() % 2 == 1) {
+                if (i + k > n) {
+                    return -1; // Not enough elements left to perform a flip
+                }
+                flipQueue.offer(i); // Record the flip
+                flips++;
+            }
+        }
+
+        return flips;
+    }
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+
+        // Test cases
+        int[] nums1 = {0, 1, 0};
+        int k1 = 1;
+        System.out.println(solution.minKBitFlips(nums1, k1)); // Output: 2
+
+        int[] nums2 = {1, 1, 0};
+        int k2 = 2;
+        System.out.println(solution.minKBitFlips(nums2, k2)); // Output: -1
+
+        int[] nums3 = {0, 0, 0, 1, 0, 1, 1, 0};
+        int k3 = 3;
+        System.out.println(solution.minKBitFlips(nums3, k3)); // Output: 3
+    }
+}
