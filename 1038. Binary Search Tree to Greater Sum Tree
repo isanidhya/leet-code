@@ -1,0 +1,64 @@
+class TreeNode {
+    int val;
+    TreeNode left;
+    TreeNode right;
+    TreeNode() {}
+    TreeNode(int val) { this.val = val; }
+    TreeNode(int val, TreeNode left, TreeNode right) {
+        this.val = val;
+        this.left = left;
+        this.right = right;
+    }
+}
+
+public class Solution {
+    private int sum = 0;
+
+    public TreeNode bstToGst(TreeNode root) {
+        traverse(root);
+        return root;
+    }
+
+    private void traverse(TreeNode node) {
+        if (node == null) return;
+        
+        // Traverse the right subtree first (larger values)
+        traverse(node.right);
+        
+        // Modify the value of the current node
+        sum += node.val;
+        node.val = sum;
+        
+        // Traverse the left subtree (smaller values)
+        traverse(node.left);
+    }
+    
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        
+        // Example 1
+        TreeNode root1 = new TreeNode(4,
+            new TreeNode(1,
+                new TreeNode(0),
+                new TreeNode(2, null, new TreeNode(3))),
+            new TreeNode(6,
+                new TreeNode(5),
+                new TreeNode(7, null, new TreeNode(8)))
+        );
+        TreeNode result1 = solution.bstToGst(root1);
+        printInOrder(result1); // Output should be [30,36,21,36,35,26,15,null,null,null,33,null,null,null,8]
+        
+        // Example 2
+        TreeNode root2 = new TreeNode(0, null, new TreeNode(1));
+        TreeNode result2 = solution.bstToGst(root2);
+        printInOrder(result2); // Output should be [1,null,1]
+    }
+    
+    // Helper method to print the tree in order (used for testing)
+    private static void printInOrder(TreeNode node) {
+        if (node == null) return;
+        printInOrder(node.left);
+        System.out.print(node.val + " ");
+        printInOrder(node.right);
+    }
+}
