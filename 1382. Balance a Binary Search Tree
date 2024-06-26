@@ -1,0 +1,76 @@
+import java.util.ArrayList;
+import java.util.List;
+
+class TreeNode {
+    int val;
+    TreeNode left;
+    TreeNode right;
+    TreeNode() {}
+    TreeNode(int val) { this.val = val; }
+    TreeNode(int val, TreeNode left, TreeNode right) {
+        this.val = val;
+        this.left = left;
+        this.right = right;
+    }
+}
+
+public class Solution {
+    public TreeNode balanceBST(TreeNode root) {
+        // Step 1: In-order traversal to get sorted node values
+        List<Integer> sortedNodes = new ArrayList<>();
+        inorderTraversal(root, sortedNodes);
+
+        // Step 2: Build a balanced BST from the sorted node values
+        return buildBalancedBST(sortedNodes, 0, sortedNodes.size() - 1);
+    }
+
+    private void inorderTraversal(TreeNode node, List<Integer> sortedNodes) {
+        if (node == null) {
+            return;
+        }
+        inorderTraversal(node.left, sortedNodes);
+        sortedNodes.add(node.val);
+        inorderTraversal(node.right, sortedNodes);
+    }
+
+    private TreeNode buildBalancedBST(List<Integer> sortedNodes, int start, int end) {
+        if (start > end) {
+            return null;
+        }
+        int mid = start + (end - start) / 2;
+        TreeNode node = new TreeNode(sortedNodes.get(mid));
+        node.left = buildBalancedBST(sortedNodes, start, mid - 1);
+        node.right = buildBalancedBST(sortedNodes, mid + 1, end);
+        return node;
+    }
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+
+        // Example 1
+        TreeNode root1 = new TreeNode(1, null, new TreeNode(2, null, new TreeNode(3, null, new TreeNode(4))));
+        TreeNode balancedRoot1 = solution.balanceBST(root1);
+        printTree(balancedRoot1); // Expected output: [2, 1, 3, null, null, null, 4]
+
+        // Example 2
+        TreeNode root2 = new TreeNode(2, new TreeNode(1), new TreeNode(3));
+        TreeNode balancedRoot2 = solution.balanceBST(root2);
+        printTree(balancedRoot2); // Expected output: [2, 1, 3]
+    }
+
+    private static void printTree(TreeNode root) {
+        List<String> result = new ArrayList<>();
+        traverseTree(root, result);
+        System.out.println(result);
+    }
+
+    private static void traverseTree(TreeNode node, List<String> result) {
+        if (node == null) {
+            result.add("null");
+            return;
+        }
+        result.add(String.valueOf(node.val));
+        traverseTree(node.left, result);
+        traverseTree(node.right, result);
+    }
+}
