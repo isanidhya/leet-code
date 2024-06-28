@@ -1,0 +1,47 @@
+import java.util.Arrays;
+
+public class Solution {
+    public long maximumImportance(int n, int[][] roads) {
+        // Array to store the degree of each city
+        int[] degree = new int[n];
+        
+        // Calculate the degree of each city
+        for (int[] road : roads) {
+            degree[road[0]]++;
+            degree[road[1]]++;
+        }
+        
+        // Sort cities by their degrees in descending order
+        Integer[] cities = new Integer[n];
+        for (int i = 0; i < n; i++) {
+            cities[i] = i;
+        }
+        Arrays.sort(cities, (a, b) -> degree[b] - degree[a]);
+        
+        // Assign values from n to 1 to the cities based on their degrees
+        int[] value = new int[n];
+        for (int i = 0; i < n; i++) {
+            value[cities[i]] = n - i;
+        }
+        
+        // Calculate the total importance of all roads
+        long totalImportance = 0;
+        for (int[] road : roads) {
+            totalImportance += value[road[0]] + value[road[1]];
+        }
+        
+        return totalImportance;
+    }
+    
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        
+        // Example 1
+        int[][] roads1 = {{0,1},{1,2},{2,3},{0,2},{1,3},{2,4}};
+        System.out.println(solution.maximumImportance(5, roads1)); // Output: 43
+        
+        // Example 2
+        int[][] roads2 = {{0,3},{2,4},{1,3}};
+        System.out.println(solution.maximumImportance(5, roads2)); // Output: 20
+    }
+}
