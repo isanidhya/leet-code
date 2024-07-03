@@ -1,0 +1,31 @@
+import java.util.Arrays;
+
+public class Solution {
+    public int minDifference(int[] nums) {
+        int n = nums.length;
+        if (n <= 4) return 0;  // If the array has 4 or fewer elements, we can make all elements the same.
+        
+        Arrays.sort(nums);
+        
+        // Considering the four scenarios:
+        int diff1 = nums[n - 1] - nums[3];      // Change the three smallest elements
+        int diff2 = nums[n - 2] - nums[2];      // Change two smallest and one largest
+        int diff3 = nums[n - 3] - nums[1];      // Change one smallest and two largest
+        int diff4 = nums[n - 4] - nums[0];      // Change the three largest elements
+        
+        return Math.min(Math.min(diff1, diff2), Math.min(diff3, diff4));
+    }
+
+    public static void main(String[] args) {
+        Solution sol = new Solution();
+        
+        int[] nums1 = {5, 3, 2, 4};
+        System.out.println(sol.minDifference(nums1));  // Output: 0
+        
+        int[] nums2 = {1, 5, 0, 10, 14};
+        System.out.println(sol.minDifference(nums2));  // Output: 1
+        
+        int[] nums3 = {3, 100, 20};
+        System.out.println(sol.minDifference(nums3));  // Output: 0
+    }
+}
