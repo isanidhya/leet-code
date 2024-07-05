@@ -1,0 +1,71 @@
+import java.util.*;
+
+class ListNode {
+    int val;
+    ListNode next;
+    ListNode(int x) { val = x; }
+
+    // Deserialize method to convert a string representation of a list into a linked list
+    public static ListNode deserialize(String data) {
+        if (data.equals("[]")) return null;
+
+        data = data.substring(1, data.length() - 1);  // Remove the surrounding brackets
+        String[] parts = data.split(",");  // Split the string by commas
+        ListNode dummy = new ListNode(0);
+        ListNode current = dummy;
+
+        for (String part : parts) {
+            current.next = new ListNode(Integer.parseInt(part.trim()));
+            current = current.next;
+        }
+
+        return dummy.next;
+    }
+}
+
+public class Solution {
+    public int[] nodesBetweenCriticalPoints(ListNode head) {
+        int firstCriticalPoint = -1;
+        int lastCriticalPoint = -1;
+        int minDistance = Integer.MAX_VALUE;
+        int currentIndex = 0;
+        int prevVal = -1;
+
+        ListNode prevNode = null;
+        ListNode currentNode = head;
+
+        while (currentNode != null && currentNode.next != null) {
+            if (prevNode != null && ((currentNode.val > prevNode.val && currentNode.val > currentNode.next.val) || 
+                                     (currentNode.val < prevNode.val && currentNode.val < currentNode.next.val))) {
+                if (firstCriticalPoint == -1) {
+                    firstCriticalPoint = currentIndex;
+                } else {
+                    minDistance = Math.min(minDistance, currentIndex - lastCriticalPoint);
+                }
+                lastCriticalPoint = currentIndex;
+            }
+            prevNode = currentNode;
+            currentNode = currentNode.next;
+            currentIndex++;
+        }
+
+        if (firstCriticalPoint == lastCriticalPoint) {
+            return new int[] {-1, -1};
+        }
+
+        int maxDistance = lastCriticalPoint - firstCriticalPoint;
+        return new int[] {minDistance, maxDistance};
+    }
+
+    public static void main(String[] args) {
+        Solution sol = new Solution();
+
+        ListNode head1 = ListNode.deserialize("[5,3,1,2,5,1,2]");
+        int[] result1 = sol.nodesBetweenCriticalPoints(head1);
+        System.out.println("[" + result1[0] + ", " + result1[1] + "]"); // Output: [1, 3]
+
+        ListNode head2 = ListNode.deserialize("[1,3,2,2,3,2,2,2,7]");
+        int[] result2 = sol.nodesBetweenCriticalPoints(head2);
+        System.out.println("[" + result2[0] + ", " + result2[1] + "]"); // Output: [3, 3]
+    }
+}
