@@ -1,0 +1,66 @@
+import java.util.*;
+
+public class Solution {
+    public List<Integer> survivedRobotsHealths(int[] positions, int[] healths, String directions) {
+        // Create a list of robots with their position, health, direction, and original index
+        List<int[]> robots = new ArrayList<>();
+        for (int i = 0; i < positions.length; i++) {
+            robots.add(new int[]{positions[i], healths[i], directions.charAt(i), i});
+        }
+
+        // Sort robots based on their positions
+        robots.sort(Comparator.comparingInt(a -> a[0]));
+
+        // Stack to hold robots moving to the right
+        Deque<int[]> stack = new ArrayDeque<>();
+        // Array to store the survivors' healths
+        Integer[] survivors = new Integer[positions.length];
+
+        for (int[] robot : robots) {
+            int pos = robot[0];
+            int health = robot[1];
+            char direction = (char) robot[2];
+            int idx = robot[3];
+
+            if (direction == 'R') {
+                stack.push(robot);
+            } else {
+                while (!stack.isEmpty() && health > 0) {
+                    int[] rightRobot = stack.peek();
+                    int rHealth = rightRobot[1];
+                    int rIdx = rightRobot[3];
+
+                    if (health > rHealth) {
+                        health -= 1;
+                        stack.pop();
+                    } else if (health < rHealth) {
+                        rightRobot[1] -= 1;
+                        health = 0;
+                    } else {
+                        stack.pop();
+                        health = 0;
+                    }
+                }
+
+                if (health > 0) {
+                    survivors[idx] = health;
+                }
+            }
+        }
+
+        while (!stack.isEmpty()) {
+            int[] robot = stack.pop();
+            survivors[robot[3]] = robot[1];
+        }
+
+        List<Integer> result = new ArrayList<>();
+        for (Integer survivor : survivors) {
+            if (survivor != null) {
+                result.add(survivor);
+            }
+        }
+
+        return result;
+    }
+
+}
