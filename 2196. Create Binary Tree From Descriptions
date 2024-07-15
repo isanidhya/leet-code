@@ -1,0 +1,52 @@
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
+class TreeNode {
+    int val;
+    TreeNode left;
+    TreeNode right;
+    
+    TreeNode(int val) {
+        this.val = val;
+    }
+}
+
+public class Solution {
+    public TreeNode createBinaryTree(int[][] descriptions) {
+        Map<Integer, TreeNode> nodes = new HashMap<>();
+        Set<Integer> children = new HashSet<>();
+        
+        for (int[] description : descriptions) {
+            int parentVal = description[0];
+            int childVal = description[1];
+            boolean isLeft = description[2] == 1;
+            
+            TreeNode parentNode = nodes.getOrDefault(parentVal, new TreeNode(parentVal));
+            TreeNode childNode = nodes.getOrDefault(childVal, new TreeNode(childVal));
+            
+            if (isLeft) {
+                parentNode.left = childNode;
+            } else {
+                parentNode.right = childNode;
+            }
+            
+            nodes.put(parentVal, parentNode);
+            nodes.put(childVal, childNode);
+            children.add(childVal);
+        }
+        
+        TreeNode root = null;
+        for (int nodeVal : nodes.keySet()) {
+            if (!children.contains(nodeVal)) {
+                root = nodes.get(nodeVal);
+                break;
+            }
+        }
+        
+        return root;
+    }
+
+    
+}
