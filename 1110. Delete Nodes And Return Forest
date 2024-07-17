@@ -1,0 +1,49 @@
+import java.util.*;
+
+class TreeNode {
+    int val;
+    TreeNode left;
+    TreeNode right;
+
+    TreeNode(int val) {
+        this.val = val;
+    }
+}
+
+public class Solution {
+    public List<TreeNode> delNodes(TreeNode root, int[] to_delete) {
+        Set<Integer> toDeleteSet = new HashSet<>();
+        for (int num : to_delete) {
+            toDeleteSet.add(num);
+        }
+
+        List<TreeNode> forest = new ArrayList<>();
+        root = deleteNodes(root, toDeleteSet, forest);
+        if (root != null) {
+            forest.add(root);
+        }
+
+        return forest;
+    }
+
+    private TreeNode deleteNodes(TreeNode node, Set<Integer> toDeleteSet, List<TreeNode> forest) {
+        if (node == null) {
+            return null;
+        }
+
+        node.left = deleteNodes(node.left, toDeleteSet, forest);
+        node.right = deleteNodes(node.right, toDeleteSet, forest);
+
+        if (toDeleteSet.contains(node.val)) {
+            if (node.left != null) {
+                forest.add(node.left);
+            }
+            if (node.right != null) {
+                forest.add(node.right);
+            }
+            return null; // Remove this node
+        }
+
+        return node; // Keep this node
+    }
+}
