@@ -1,0 +1,36 @@
+import java.util.*;
+
+public class Solution {
+    public String[] sortPeople(String[] names, int[] heights) {
+        int n = names.length;
+        List<Pair> people = new ArrayList<>();
+
+        // Pair each name with the corresponding height
+        for (int i = 0; i < n; i++) {
+            people.add(new Pair(heights[i], names[i]));
+        }
+
+        // Sort the pairs based on height in descending order
+        people.sort((a, b) -> b.height - a.height);
+
+        // Extract the names from the sorted pairs
+        String[] result = new String[n];
+        for (int i = 0; i < n; i++) {
+            result[i] = people.get(i).name;
+        }
+
+        return result;
+    }
+
+    // Helper class to store the pair of height and name
+    private static class Pair {
+        int height;
+        String name;
+
+        Pair(int height, String name) {
+            this.height = height;
+            this.name = name;
+        }
+    }
+
+}
